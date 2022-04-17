@@ -1,0 +1,107 @@
+\documentclass[12 pt, russian]{article}
+\usepackage[T1]{fontenc}
+\usepackage{ulem}
+\usepackage[utf8]{luainputenc}
+\usepackage{geometry}
+\usepackage[pdftex]{graphicx}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+\usepackage{amstext}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,main=russian]{babel}
+\usepackage{setspace}
+\usepackage{esint}
+\usepackage{comment}
+\usepackage{babel}
+\usepackage{float}
+\usepackage{amsfonts}
+\usepackage{fullpage} 
+\usepackage{parskip} 
+\usepackage{tikz} 
+\usepackage{indentfirst}
+\title{Курсовая работа ФИО}
+\raggedbottom
+\begin{document}
+\thispagestyle{empty}
+\newtheorem{Thm}{Теорема}[section]
+\newtheorem{Lemm}{Лемма}[section]
+\newtheorem{Rem}{Замечание}[section]
+\newtheorem{Co}{Следствие}[section]
+\theoremstyle{definition}
+\newtheorem{Exam}{Пример}[section]
+\newtheorem{Dfn}{Определение}[section]
+\sloppy
+\begin{titlepage}
+\begin{center}
+Московский государственный университет имени~М.~В.~Ломоносова\\
+факультет космических исследований\\
+кафедра математической статистики и случайных процессов\\
+\centering
+\includegraphics[width=0.3\textwidth]{mechmath.jpg}
+
+\vspace*{100pt} Курсовая работа\\
+студента 402 группы \\
+Шигина Глеба Сергеевича \\
+\vspace{10pt} {\Large{\textbf{}}\\}
+Трансформация данных в GLM моделях
+\vspace*{40pt}
+
+\begin{flushright}
+Научный руководитель:\\ с.н.с., к.ф.-м.н.\\  Шкляев Александр Викторович\\
+\end{flushright}
+
+\vspace*{\fill} Москва, 2022
+\end{center}
+\end{titlepage}
+\section{Введение}
+Ветвящиеся процессы были введены Гальтоном и Ватсоном в работе~\cite{Galton}. Классическая теория для этих процессов предполагает, что производящая функция процесса $\phi(s)$ отлична от $s$. Мы дополним исследование недостающим случаем $\phi(s)=s$. Для такой модели мы получим асимптотику вероятностей умеренных, больших и сверхбольших уклонения ветвящегося процесса.
+
+Итак, ветвящимся процессом называют цепь Маркова $Z_n$, такую что $Z_0=1$, а
+$$
+Z_{n+1} = \sum_{i=1}^{Z_n} \xi_{n,i},
+$$
+где $\xi_{n,i}$ --- независимые одинаково распределенные (н.о.р.) случайные величины (сл.в), имеющие производящую функцию $\phi(s)=s$. Основной результат работы заключается в нахождении асимптотики вероятностей
+$$
+{\bf P}(Z_n \ge x) 
+$$
+при различных $x$ и $n\to\infty$.
+
+Работа устроена следующим образом: в разделе~\ref{Before} содержатся предварительные сведения, которые потребуются в ходе доказательства основной теоремы~\ref{MainTh}, содержащейся в разделе~\ref{Main}. Доказательство основной теоремы приведено в разделе~\ref{Proof}. Заключительные замечания сделаны в разделе~\ref{Final}.
+\section{Предварительные сведения}
+\label{Before}
+Рассмотрим ветвящийся процесс Гальтона-Ватсона, определенный выше. Тогда нам потребуются следующие факты:
+\begin{Lemm} (Лемма 1.1(iv), \cite{Branch})
+Производящая функция $Z_n$ задается соотношением
+$$
+\phi_{Z_n}(s) = \phi_n(s),
+$$
+где $\phi_n(s)$ --- $n$-кратная суперпозиция производящей функции $\phi$.
+\end{Lemm}
+\begin{Co}
+Предположим, что $\phi(s)=s$. Тогда $\phi_{Z_n}(s) = s$.
+\end{Co}
+\section{Основной результат}
+\label{Main}
+Итак, предположим, что ветвящийся процесс $Z_n$ имеет производящую функцию числа потомков одной частицы $\phi(s)=s$. Тогда справедлива следующая теорема, включающая себя анализ умеренных, больших и свербольших уклонений процесса $Z_n$:
+\begin{Thm}
+\label{MainTh}
+Пусть $k>1$. Тогда
+$$
+\lim_{n\to\infty} {\bf P}(Z_n\ge k) = 0,
+$$
+причем сходимость равномерна по рассматриваемым $k$.
+\end{Thm}
+\section{Доказательства}
+\label{Proof}
+\begin{proof}[Доказательство теоремы~\ref{MainTh}]
+Доказательство очевидно.
+\end{proof}
+\section{Заключение}
+\label{Final}
+В работе получено решение значимой проблемы, на протяжении долгих лет остававшейся не исследованной. Отметим, что проблема малых уклонений и по сей день остается открытой и требует дальнейших исследований.
+\bibliographystyle{elsarticle-num-names}
+\bibliography{BiblioIvanov}
+\end{document}
