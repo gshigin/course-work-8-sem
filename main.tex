@@ -62,13 +62,51 @@
 \section{Введение}
 \label{sec:Intro}
 TBA
-\section{Теория}
+\section{Трансформация данных}
 \label{sec:Theory}
-TBA
+Существуют классы задач, для которых мы знаем, что матожидание ${\bf E}(Y|X)$ является линейной функцией от $X$. 
+Это может быть теория, подкрепленная экспериментальными данными \cite{PhysRevD.17.2875}, либо статистическая информация о данных. Например,
+пусть $y_i$ и $x_i$ -- выборки их нормальных распределенний со средними $\mu_X,\mu_Y$ соответственно, дисперсиями $\sigma_X,\sigma_Y$ соответственно и
+корреляцией $\rho_{XY}$. Тогда можно показать (см. \cite[стр. 550]{Berger2001-pm}), что 
+\begin{align}
+\label{eq:normal-normal}
+y_i\mid x_i \sim N\left( \mu_Y-\rho_{XY}\frac{\sigma_Y}{\sigma_X}\mu_X + \rho_{XY}\frac{\sigma_Y}{\sigma_X}x_i,\sigma_Y(1-\rho^2_{XY}) \right).
+\end{align}
+Это можно переписать как $y_i\mid x_i \sim N \left (\beta_0 + \beta_1 x_i,\sigma^2 \right)$, где 
+\begin{align}
+\beta_0 = \mu_Y-\rho_{XY}\frac{\sigma_Y}{\sigma_X}\mu_X, \beta_1 = \rho_{XY}\frac{\sigma_Y}{\sigma_X},\sigma^2 = {\bf D}(Y|X) = \sigma^2_Y (1-\rho_{XY}),
+\end{align}
+то есть мы получили линейную регрессию $Y$ по $X$:
+\begin{align}
+    {\bf E}(Y|X=x_i) = \beta_0 + \beta_1 x_i.
+\end{align}
+Однако, у нас не всегда есть возможность узнать истинную зависимость целевой переменной от предикторов, 
+и любое преобразование данных, которое мы используем, не более чем приблежение, которое,
+как мы надеемся, является подходящим для рассматриваемой задачи. Это поднимает два важных вопроса:
+еак выбрать преобразование и подходит ли полученная модель к имеющимся данных?
+
+Для удобства на данном этапе ограничимся одним \textit{предиктором} $X$ и \textit{зависимой переменной} $Y$.
+\subsection{Трансформация зависимой переменной методом обратной функции}
+Предположим, что истинная регрессионная модель $Y$ по $X$ имеет вид:
+\begin{align}
+    \label{eq:g-regression}
+    Y = g(\beta_0 + \beta_1 X + \varepsilon),
+\end{align}
+где $g$ -- некоторая функция, вообще говоря, нам неизвестная. Модель (\ref{eq:g-regression}) может быть приведена
+к линейному виду, преобразовав $Y$ с помощью обратной функции $g^{-1}$:
+\begin{align}
+    g^{-1}(Y) = \beta_0 + \beta_1 X + \varepsilon.
+\end{align}
+Например, если $Y = \log (\beta_0 + \beta_1 X + \varepsilon),$ то $g(x) = \log (x) ,$ значит $g^{-1}(x) = \exp (x)$, и $\exp(Y) = \beta_0 + \beta_1 X + \varepsilon.$
+
+Существует несколько способов получения оценки $g^{-1}$, например, с помощью графика обратного отклика
+(\textit{inverse response plot}) \cite{Cook-Weisberg}, или с помощью подбора функции из степенного семейства (\textit{power family}), 
+включающим в себя семейство преобразований Бокса-Кокса \cite{Box-Cox-1964}. В данной работе мы сосредоточимся на последнем методе.
+
 \section{Заключение}
 \label{sec:End}
 TBA
 
-%\bibliographystyle{elsarticle-num-names}
-%\bibliography{BiblioIvanov}
+\bibliographystyle{apalike}
+\bibliography{Biblio}
 \end{document}
