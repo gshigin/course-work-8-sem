@@ -173,7 +173,7 @@ $\psi_S(y,\lambda)$ и зависимой переменной $\hat{y}$. Опт
 
 Метод Бокса-Кокса основывается на предположении, что для некоторого неизвестного $\lambda$ после преобразования
 зависимая переменная $\psi_M(Y,\lambda)$ такова, что $\psi_M(y_i,\lambda)$ -- независимые нормально распределенные сл.в. с
-постоянной дисперсией $\sigma^2$ и матожиданием
+постоянной дисперсией $\sigma^2$ и математическим ожиданием
 \begin{align}
     {\bf E}(\psi_M(Y,\lambda) | X=x) = \beta_0 + \beta_1 x.
 \end{align}
@@ -186,20 +186,20 @@ $\psi_S(y,\lambda)$ и зависимой переменной $\hat{y}$. Опт
 \end{multline}
 Оценка максимума правдоподобия дает нам $\hat{\sigma}^2 = RSS/n.$ Отсюда получаем:
 \begin{align}
-    \ell = -\frac{n}{2}\log(2 \pi)-\frac{n}{2}--\frac{n}{2}\log (RSS/n).
+    \ell = -\frac{n}{2}\log(2 \pi)-\frac{n}{2}-\frac{n}{2}\log (RSS/n).
 \end{align}
 
 Можно показать, что якобиан замены преобразования Бокса-Кокса $\psi_M(Y,\lambda)$ равен 1 при любом $\lambda$.
 А значит при фиксированном $\lambda$ после трансформации зависимой переменной вид функции правдоподобия останется прежним:
 \begin{align}
     \label{eq:log-like-bc}
-    \ell(\lambda) = -\frac{n}{2}\log(2 \pi)-\frac{n}{2}--\frac{n}{2}\log (RSS(\lambda)/n).
+    \ell(\lambda) = -\frac{n}{2}\log(2 \pi)-\frac{n}{2}-\frac{n}{2}\log (RSS(\lambda)/n).
 \end{align}
 Так как только последний член выражения (\ref{eq:log-like-bc}) зависит от $\lambda$, то решение задачи
 максимизации правдоподобия $L(\lambda)$ (или логарифма правдоподобия $\ell(\lambda)$) по $\lambda$ эквивалентна задаче минимизации
 $RSS(\lambda)$ по $\lambda$:
 \begin{align}
-    \ell(\lambda) = -\frac{n}{2}\log(2 \pi)-\frac{n}{2}--\frac{n}{2}\log (RSS(\lambda)/n) \to \max\limits_\lambda\Leftrightarrow RSS(\lambda) \to \min\limits_\lambda
+    \ell(\lambda) = -\frac{n}{2}\log(2 \pi)-\frac{n}{2}-\frac{n}{2}\log (RSS(\lambda)/n) \to \max\limits_\lambda\Leftrightarrow RSS(\lambda) \to \min\limits_\lambda
 \end{align}
 
 Здесь и далее для удобства предлагается под преобразованием Бокса-Кокса понимать $\psi_S(X,\lambda)$ для
@@ -236,16 +236,62 @@ inverse response plot. Однако, как мы увидим далее, пре
 
 \subsection{Трансформация и предиктора, и зависимой переменной}
 В случае, когда необходимо трансформировать $Y$ и $X$, существует
-несколько альтернативных подходов. Ниже будут сформулированы эти подходы,
+несколько альтернативных подходов. Ниже эти будут сформулированы эти подходы,
 где необходимо -- предоставлена мотивация подхода, и далее будет проведено практическое сравнение.
 
 Итак, предлагаемые варианты:
 \begin{enumerate}
-    \item 
+    \item Попарная минимизация $RSS$ предикторов из ${\bf X}$ с последующим преобразованием $Y$ с помощью inverse response plot (если необходимо);
+    
+    Предлагается для каждого предиктора подобрать преобразование Бокса-Кокса, минимизируя $RSS$ от
+    регрессии $Y$ только по этому предиктору. В случае отсутствия корреляций между предикторами, каждый предиктор
+    может быть "улучшен", улучшая полную регрессию $Y$ по ${\bf X}$. Иногда может быть полезно трансформировать $Y$ не после этих действий,
+    а до, например, когда возникает гетероскедастичность.
+    \item Минимизация определителя матрицы выборочных ковариаций $|V({\bf X})|$ с последующим преобразованием $Y$ с помощью inverse response plot;
+
+    В работе \cite{Velilla-1993} предлагается расширить метод Бокса-Кокса на случай многомерных случайных величин.
+    В приложении \ref{appendix-velilla} показано что-то.
 \end{enumerate}
 \section{Заключение}
 \label{sec:End}
 TBA
+
+\appendix
+\section{Многомерное преобразование Бокса-Кокса}
+\label{appendix-velilla}
+
+Пусть у нас есть многомерная сл.в. ${\bf X} = (X_1,X_2,\ldots, X_p)$.
+Введем преобразование:
+\begin{align}
+    \psi_M({\bf X}, \pmb{\lambda}) = (\psi_M(X_1,\lambda_1),\psi_M(X_2,\lambda_2),\ldots,\psi_M(X_p,\lambda_p)).
+\end{align}
+Предположим, что существует такое $\pmb{\lambda}$, что
+\begin{align}
+    \psi_M({\bf X}, \pmb{\lambda}) \sim N({\pmb\mu}, \bf{V}),
+\end{align}
+где ${\bf{V}}$ -- некоторая симметричная положительно определенная матрица, которую мы хотим оценить.
+Если $\bf{x}$ -- это наблюдения из распределения $\bf{X}$, то правдоподобие имеет вид
+\begin{align}
+    L(\lambda) = \prod\limits_{i=1}^n\frac{1}{(2\pi|{\bf V}|)^{1/2}}\exp\left( -\frac{1}{2}(\psi_M({\bf x}_i,\pmb{\lambda})  - \mu)^T {\bf V}^{-1}(\psi_M({\bf x}_i, \pmb{\lambda}) - \mu)) \right),
+\end{align}
+где $|{\bf V}|$ -- определитель матрицы ${\bf V}$. Тогда логарифм правдоподобия имеет вид:
+\begin{multline}
+    \label{eq:muldim-loglike}
+\log (L(\lambda)) = \ell(\lambda) = -\frac{n}{2}\log (2 \pi) - \frac{n}{2}\log (|{\bf V}|) - \\
+ - \frac{1}{2}\sum\limits_{i=1}^n\left( -\frac{1}{2}(\psi_M({\bf x}_i,\pmb{\lambda})  - \mu)^T {\bf V}^{-1}(\psi_M({\bf x}_i, \pmb{\lambda}) - \mu)) \right).
+\end{multline}
+При фиксированном $\pmb{\lambda}$ это логарифм правдоподобия многомерного нормального распределения. Мы можем найти оценки максимума правдоподобия для
+$\pmb\mu$ и $\pmb {\bf V}$:
+$$\pmb\mu(\pmb\lambda) = \dfrac{1}{n}\sum\limits_{i=1}^n\psi_M({\bf x}_i,\pmb\lambda); $$
+$$ {\bf V}(\pmb\lambda) = \dfrac{1}{n}\sum\limits_{i=1}^n (\psi_M({\bf x}_i,\pmb{\lambda})  - \mu)(\psi_M({\bf x}_i, \pmb{\lambda}) - \mu))^T. $$
+Подставляя эти оценки в (\ref{eq:muldim-loglike}), получим:
+\begin{align}
+    \label{eq:muldim-loglike-final}
+    \ell(\pmb\lambda) = -\dfrac{n}{2} - \frac{n}{2}\log (2\pi) - \frac{n}{2}\log (|{\bf V}(\pmb\lambda)|)
+\end{align}
+Максимизация (\ref{eq:muldim-loglike-final}) по $\pmb\lambda$ равносильна минимизации определителя ${\bf V}(\pmb\lambda)$ по $\pmb\lambda$.
+\section{Графики}
+\label{appendix-imgs}
 
 \bibliographystyle{apalike}
 \bibliography{Biblio}
