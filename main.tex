@@ -22,6 +22,11 @@
 \usepackage{parskip} 
 \usepackage{tikz} 
 \usepackage{indentfirst}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{mwe}
+
 \title{Курсовая работа Шигина Глеба Сергеевича}
 \raggedbottom
 \begin{document}
@@ -117,11 +122,12 @@ y_i\mid x_i \sim N\left( \mu_Y-\rho_{XY}\frac{\sigma_Y}{\sigma_X}\mu_X + \rho_{X
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1\textwidth]{imgs/inverse-response-ex.pdf}
-    \caption{Scatter plot $Y$ от $X$ (слева) и inverse response plot (справа)}\label{fig:inv-res-ex}
+    \caption{Scatter plot $Y$ от $X$ (слева) и inverse response plot (справа)}
+    \label{fig:inv-res-ex}
 \end{figure}
 Пусть $X\sim N(0, 1),\ \varepsilon \sim N(0,0.1),\ Y = (3+X+\varepsilon)^3.$ Была построена выборка размера $N=100$. Получившуюся зависимость можно увидеть на рисунке \ref{fig:inv-res-ex}.
 Построим линейную регрессию $y$ по $x$ без преобразования данных. Получим некоторые оценки $\hat{y}$. Inverse response plot можно также увидеть на рисунке \ref{fig:inv-res-ex}. Помимо точек,
-на графике присутствуют три пунктирные кривые -- они показывают результаты линейных регрессий $\hat{y}$ по $y,\ y^{1/3}$ и $\log(y)$ соответственно. Видно, что кривая $\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 y^{1/3}$
+на графике присутствуют три пунктирные кривые -- они показывают результаты линейных регрессий $\hat{y}$ по $y,\ y^{0.33}$ и $\log(y)$ соответственно. Видно, что кривая $\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 y^{0.33}$
 наиболее близка к исходным точкам. Это ожидаемо, так как из построения $Y$ следует, что искомое нами преобразование для
 Y имеет вид $g^{-1}(Y) = Y^{1/3}$.
 
@@ -235,29 +241,30 @@ inverse response plot. Однако, как мы увидим далее, пре
 Заметим, что в этом случае регрессионная модель отсутствует, и метод Бокса-Кокса модифицирован для применения непосредственно к $X$.
 
 \subsection{Трансформация и предиктора, и зависимой переменной}
+\label{subsec:trans-pred-resp}
 В случае, когда необходимо трансформировать $Y$ и $X$, существует
 несколько альтернативных подходов. Ниже эти будут сформулированы эти подходы,
 где необходимо -- предоставлена мотивация подхода, и далее будет проведено практическое сравнение.
 
 Итак, предлагаемые варианты:
 \begin{enumerate}
-    \item Попарная минимизация $RSS$ предикторов из ${\bf X}$ и преобразование $Y$ с помощью inverse response plot (если необходимо);
+    \item Попарная минимизация $RSS$ предикторов из ${\bf X}$ и преобразование $Y$ с помощью inverse response plot (если необходимо).
     
     Предлагается для каждого предиктора подобрать преобразование Бокса-Кокса, минимизирующее $RSS$ в
     регрессии $Y$ только по этому предиктору. Также, может быть полезно трансформировать $Y$ не после этих действий,
     а до, например, когда возникает гетероскедастичность.
 
-    \item Приведение всех предикторов к нормальному виду и преобразование $Y$ с помощью inverse response plot (если необходимо);
+    \item Приведение всех предикторов к нормальному виду и преобразование $Y$ с помощью inverse response plot (если необходимо).
     
     Этот метод основывается на идее, что для нормально распределенных величин существует линейная зависимость (см. начало раздела \ref{sec:Tarns}).
 
-    \item Минимизация определителя матрицы выборочных ковариаций $|V({\bf X})|$ и преобразование $Y$ с помощью inverse response plot (если необходимо);
+    \item Минимизация определителя матрицы выборочных ковариаций $|V({\bf X})|$ и преобразование $Y$ с помощью inverse response plot (если необходимо).
 
     Этот вариант является расширением предыдущего, так как будут учитываться попарные корреляции между предикторами. 
     В работе \cite{Velilla-1993} метод Бокса-Кокса распространяется на случай многомерных случайных величин.
     Связь минимизации $|V({\bf X})|$ с решением нашей задачи показана в приложении \ref{appendix-velilla}.
     \item Минимизация $RSS$ одновременно по предикторам и зависимой переменной.
-    
+    \label{item:4}
     В отличие от предыдущего метода, здесь будет учитываться связь зависимой переменной с предикторами.
 \end{enumerate}
 
@@ -266,6 +273,7 @@ inverse response plot. Однако, как мы увидим далее, пре
     \item Residuals vs fitted.
     
     Это график остатков регрессии в зависимости от прогноза зависимой переменной. Он позволяет оценить адекватность линейной модели.
+    В адекватной модели ожидается, что линия средних (на графиках -- красная кривая) будет горизонтальной прямой, проходящей через $0$.
     \item Leverage plot.
     
     Рычаг (\textit{leverage}) $h_i$ для $i$-го наблюдения -- это диагональный элемент матрицы $X(X^TX)^{-1}X^T$,
@@ -274,7 +282,9 @@ inverse response plot. Однако, как мы увидим далее, пре
     $$\dfrac{r_i}{\hat{\sigma}\sqrt{1-h_i}}.$$
     Эта стандартизация основана на том, что ${\bf D}r_i = \sigma^2 (1-h_i).$ Полученный график позволяет отследить отдельные значения,
     существенно влияющие на коэффициенты модели.
-    \item Scale-location plot. Он позволяет оценить гомоскедастичность. Это график корня из стандартизированных остатков
+    \item Scale-location plot. 
+    
+    Он позволяет оценить гомоскедастичность. Это график корня из стандартизированных остатков
     $r_i / (\sqrt{1-h_i}RSS/n)$ от прогноза зависимой переменной.
 
     \item Quantile-Quantile plot. Это график стандартизированных остатков от теоретических квантилей некоторого распределения
@@ -282,14 +292,123 @@ inverse response plot. Однако, как мы увидим далее, пре
     распределению.
 \end{enumerate}
 
-На рисунке \ref{pic:diag-plot-ex} представлен пример внешнего вида рассматриваемых графиков.
+Совокупность этих графиков назовём diagnostic plots. На рисунке \ref{pic:diag-plot-ex} представлен пример внешнего вида рассматриваемых графиков.
 
 \begin{figure}[h]
-    \label{pic:diag-plot-ex}
     \centering
     \includegraphics[width=1\textwidth]{imgs/diag-plot-expl.pdf}
-    \caption{Пример графиков, на которых будет происходить сравнение подходов.}
+    \caption{Пример diagnostic plots, на которых будет происходить сравнение подходов.}
+    \label{pic:diag-plot-ex}
 \end{figure}
+\section{Практическое сравнение}
+Здесь мы проведем сравнение методов, сформулированных в разделе \ref{subsec:trans-pred-resp}.
+\subsection{Задачи с одним предиктором}
+В случае одного предиктора, варианты $(2)$ и $(3)$ трансформации данных представляют собой
+одно и то же (нормализация многомерной случайной величины сводится к одномерному случаю). Поэтому
+на данном этапе исключим из рассмотрения вариант $(3)$ и сосредоточимся на трех оставшихся.
+
+Со всеми графиками к этим примерам можно ознакомиться в приложении \ref{appendix-imgs}.
+
+\begin{Exam}
+    \label{exmpl:1}
+    $X\sim Gamma(2,1),\ \varepsilon \sim N(0,2),\ Y = 5 + X^2+\varepsilon.$
+
+    В данном примере мы рассмотрим предиктор $X$ из гамма-распределения, нормальными остатками и простой
+    зависимостью $Y$ от $X$. Ожидается, что для $x$ будет подобрано $\lambda=2$, а $y$ останется неизменным.
+    Diagnostic plots для трансформаций $(1),\ (2)$ и $(3)$ показаны на рисунках \ref{pic:task1_1}, \ref{pic:task1_2}
+    и \ref{pic:task1_3} соответственно. 
+    
+    Из графиков видно, что нормализация $x$ + iverse plot для $y$ показали себя плохо, а
+    оставшиеся два подхода дают близкие результаты. И действительно, минимизация $RSS$ для подбора преобразования только
+    для $x$ дает значение $\lambda = 2.04$, а в использовании inverse plot для $y$ не было необходимости; совместная
+    минимизация $RSS$ и по $x$, и по $y$ дала значения параметров в преобразовании Бокса-Кокса $2.10$ и $1.03$ соответственно.
+\end{Exam}
+
+\begin{Exam}
+    \label{exmpl:2}
+    $X\sim exp(2),\ \varepsilon \sim N(0,1),\ Y = (2 + 0.8X+\varepsilon)^3.$
+
+    В этом примере мы хотим получить преобразование для $y$ с $\lambda = 1/3$, а $x$ оставить без изменений.
+    Графики \ref{pic:task2_1}, \ref{pic:task2_2}, \ref{pic:task2_3} отвечают преобразованиям
+    $(1),\ (2),\ (4)$ соответственно.
+
+    Здесь снова нормализация предиктора в отрыве от зависимой переменной не дала приемлемого результата. Подход $(1)$
+    дает $\lambda = 2.28$ для $x$ и $\mu = 1.06$ на inverse plot для $y$. В итоге часть точек превращаются в выбросы и
+    теряется нормальность остатков. Это связано с тем, что $Y$ является кубическим многочленом от $X$ и $\varepsilon$:
+    $$ Y = 0.512 X^3 + 1.92 X^2 \varepsilon + 3.84 X^2 + 2.4 X \varepsilon^2 + 9.6 X \varepsilon + 9.6 X + \varepsilon^3 + 6 \varepsilon^2 + 12 \varepsilon + 8.$$
+    И для получения простой регрессии нам сначала нужно преобразовать $y$ к $y^{1/3}$. Однако подход $(1)$ предлагает
+    действовать в обратном порядке -- сначала преобразовать $x$, а потом $y$. Ввиду сложной изначальной зависимости $y$
+    от $x$ мы не можем описать ее единственным предиктором $\psi_*(x,\lambda)$, отсюда и получаются плохие результаты.
+    
+    Совместный подбор параметров через минимизацию $RSS$ снова дает наиболее близкие к исходным значения $1.04$ для $x$
+    и $0.30$ для $y$. Правильность этого подхода также подтверждается diagnostic plot'ом.
+\end{Exam}
+
+\begin{Exam}
+    \label{exmpl:3}
+    $X\sim \chi^2(3),\ \varepsilon \sim N(0,0.2),\ Y = \arctg (X) + \varepsilon.$
+
+    Здесь имеется нестепенная зависимость $Y$ от $X$. Поэтому ни один из методов не сможет дать "правильный"$\ $ответ, однако
+    для нас представляет интерес, какой из методов окажется наиболее близким. Diagnostic plot'ы \ref{pic:task3_1}, \ref{pic:task3_2}, \ref{pic:task3_3}
+    отвечают преобразованиям $(1),\ (2),\ (4)$ соответственно.
+
+    После нормализации $x$ на графиках страдает Residuals vs Fitted график, что ставит под сомнение адекватность построенной
+    модели. Методы $(1)$ и $(4)$ снова дали похожие результаты, возможно, потому что для $y$ не требуется никакого преобразования,
+    и оба метода концентрируются на $x$. Имеем:
+    \begin{itemize}
+        \item $\lambda = 0.01$ для $x$ и $\mu = 0.55$ для $y$ в методе $(1)$;
+        \item $\lambda = -0.01$ для $x$ и $\mu = 0.91$ для $y$ в методе $(4)$.
+    \end{itemize}
+    Существенным отличием является то, что у метода $(4)$ остатки получились существенно более похожими на нормальные, чем
+    в методе $(1)$. Отличия остальных трех графиков не являются настолько значительными.
+\end{Exam}
+
+\begin{Exam}
+    \label{exmpl:4}
+    $X\sim R[0,3],\ \varepsilon \sim exp(1),\ Y = X\varepsilon.$
+
+    Теперь рассмотрим гетероскедастичную модель, ошибка $\varepsilon$ здесь является мультипликативной.
+    Решением такой задачи будет являться логарифмирование и предиктора, и зависимой переменной. Тогда задача
+    будет иметь вид:
+    \begin{equation}
+        \log{Y} = \log{X} + \log{\varepsilon} = \log X + {\bf E}\log\varepsilon + \tilde{\varepsilon},
+    \end{equation}
+    где $\tilde{\varepsilon}\sim N(0, \tilde{\sigma}^2).$
+
+    В этом примере все рассматриваемые методы получили разные результаты, однако
+    качественно полученные модели оказались достаточно похожими.
+
+    \begin{itemize}
+        \item $\lambda = 3$ для $x$ (крайнее значение из заданного диапазона) и $\mu=1$ для $y$ (inverse plot не применялся) в подходе $(1)$;
+        \item $\lambda = 0.78$ для $x$ и $\mu=-0.17$ для $y$ в подходе $(2)$;
+        \item $\lambda = 1.01$ для $x$ и $\mu=-0.07$ для $y$ в подходе $(4)$;
+    \end{itemize}
+
+    Во всех моделях имеется наклон на графике Scale-Location. Это говорит нам о том, что в результате преобразований мы не смогли
+    достичь гомоскедастичности (наиболее близким к горизонтальной линии оказался Scale-Location plot для подхода $(4)$). Также мы
+    можем наблюдать наличие "хвостов"$\ $на графиках QQ-plot. Наиболее похожие на нормальное распределение остатки
+    получились в подходе $(2)$.
+\end{Exam}
+
+\begin{Exam}
+    \label{exmpl:5}
+    $X\sim R[0,3],\ \varepsilon \sim N(0,0.25),\ Y = \exp (X\varepsilon).$
+
+    Этот пример является некоторой комбинацией примеров \ref{exmpl:3} и \ref{exmpl:4}.
+    
+    Рассматриваемые нами методы не рассчитаны на работу с нестепенными зависимостями, однако не всегда можно
+    с помощью только визуальных методов отличить одну задачу от другой. Например, визуально зависимости
+    $y$ от $x$ в примерах \ref{exmpl:4} и \ref{exmpl:5} очень похожи (см. рисунок \ref{fig:d} и \ref{fig:e}).
+    
+    Как можно видеть на diagnostic plot'ах на рисунках \ref{pic:task5_1}, \ref{pic:task5_2} и \ref{pic:task5_3}
+    (соответствуют походам $(1)$, $(2)$ и $(4)$), у всех методов получились достаточно плохие модели: нормальности остатков
+    нет ни у кого, во всех случаях присутствует гетероскедастичность.
+\end{Exam}
+
+
+\subsection{Задачи с несколькими предикторами}
+
+
 \section{Заключение}
 \label{sec:End}
 TBA
@@ -321,15 +440,162 @@ TBA
 При фиксированном $\pmb{\lambda}$ это логарифм правдоподобия многомерного нормального распределения. Мы можем найти оценки максимума правдоподобия для
 $\pmb\mu$ и $\pmb {\bf V}$:
 $$\pmb\mu(\pmb\lambda) = \dfrac{1}{n}\sum\limits_{i=1}^n\psi_M({\bf x}_i,\pmb\lambda); $$
-$$ {\bf V}(\pmb\lambda) = \dfrac{1}{n}\sum\limits_{i=1}^n (\psi_M({\bf x}_i,\pmb{\lambda})  - \mu)(\psi_M({\bf x}_i, \pmb{\lambda}) - \mu))^T. $$
+$$ {\bf V}(\pmb\lambda) = \dfrac{1}{n}\sum\limits_{i=1}^n (\psi_M({\bf x}_i,\pmb{\lambda})  - \pmb\mu)(\psi_M({\bf x}_i, \pmb{\lambda}) - \pmb\mu))^T. $$
 Подставляя эти оценки в (\ref{eq:muldim-loglike}), получим:
 \begin{align}
     \label{eq:muldim-loglike-final}
     \ell(\pmb\lambda) = -\dfrac{n}{2} - \frac{n}{2}\log (2\pi) - \frac{n}{2}\log (|{\bf V}(\pmb\lambda)|)
 \end{align}
 Максимизация (\ref{eq:muldim-loglike-final}) по $\pmb\lambda$ равносильна минимизации определителя ${\bf V}(\pmb\lambda)$ по $\pmb\lambda$.
+
+\newpage
+
 \section{Графики}
 \label{appendix-imgs}
+
+\begin{figure}[h!] % "[t!]" placement specifier just for this example
+    \begin{subfigure}{0.45\textwidth}
+    \includegraphics[width=\linewidth]{imgs/Task1.pdf}
+    \caption{Scatter plot $y$ от $x$ для примера \ref{exmpl:1}} \label{fig:a}
+    \end{subfigure}\hspace*{\fill}
+    \begin{subfigure}{0.45\textwidth}
+    \includegraphics[width=\linewidth]{imgs/Task2.pdf}
+    \caption{Scatter plot $y$ от $x$ для примера \ref{exmpl:2}} \label{fig:b}
+    \end{subfigure}
+    
+    \medskip
+    \begin{subfigure}{0.45\textwidth}
+    \includegraphics[width=\linewidth]{imgs/Task3.pdf}
+    \caption{Scatter plot $y$ от $x$ для примера \ref{exmpl:3}} \label{fig:c}
+    \end{subfigure}\hspace*{\fill}
+    \begin{subfigure}{0.45\textwidth}
+    \includegraphics[width=\linewidth]{imgs/Task4.pdf}
+    \caption{Scatter plot $y$ от $x$ для примера \ref{exmpl:4}} \label{fig:d}
+    \end{subfigure}
+    
+    \medskip
+    \begin{subfigure}{0.45\textwidth}
+    \includegraphics[width=\linewidth]{imgs/Task5.pdf}
+    \caption{Scatter plot $y$ от $x$ для примера \ref{exmpl:5}} \label{fig:e}
+    \end{subfigure}\hspace*{\fill}
+    \begin{subfigure}{0.45\textwidth}
+    %\includegraphics[width=\linewidth]{pic6.pdf}
+    %\caption{Sixth subfigure} \label{fig:f}
+    \end{subfigure}
+    
+    \caption{Scatter plot'ы для примеров \ref{exmpl:1}-\ref{exmpl:5}} \label{fig:Task1-5}
+\end{figure}
+\newpage
+%Task 1
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task1-rss-noinv.pdf}
+    \caption{Diagnostic plot для подхода $(1)$ в примере \ref{exmpl:1}}
+    \label{pic:task1_1}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task1-norm-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(2)$ в примере \ref{exmpl:1}}
+    \label{pic:task1_2}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task1-rss-xy.pdf}
+    \caption{Diagnostic plot для подхода $(4)$ в примере \ref{exmpl:1}}
+    \label{pic:task1_3}
+\end{figure}
+\newpage
+%Task 2
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task2-rss-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(1)$ в примере \ref{exmpl:2}}
+    \label{pic:task2_1}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task2-norm-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(2)$ в примере \ref{exmpl:2}}
+    \label{pic:task2_2}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task2-rss-xy.pdf}
+    \caption{Diagnostic plot для подхода $(4)$ в примере \ref{exmpl:2}}
+    \label{pic:task2_3}
+\end{figure}
+\newpage
+%Task 3
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task3-rss-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(1)$ в примере \ref{exmpl:3}}
+    \label{pic:task3_1}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task3-norm-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(2)$ в примере \ref{exmpl:3}}
+    \label{pic:task3_2}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task3-rss-xy.pdf}
+    \caption{Diagnostic plot для подхода $(4)$ в примере \ref{exmpl:3}}
+    \label{pic:task3_3}
+\end{figure}
+\newpage
+%Task 4
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task4-rss-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(1)$ в примере \ref{exmpl:4}}
+    \label{pic:task4_1}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task4-norm-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(2)$ в примере \ref{exmpl:4}}
+    \label{pic:task4_2}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task4-rss-xy.pdf}
+    \caption{Diagnostic plot для подхода $(4)$ в примере \ref{exmpl:4}}
+    \label{pic:task4_3}
+\end{figure}
+\newpage
+%Task 5
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task5-rss-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(1)$ в примере \ref{exmpl:5}}
+    \label{pic:task5_1}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task5-norm-invplot.pdf}
+    \caption{Diagnostic plot для подхода $(2)$ в примере \ref{exmpl:5}}
+    \label{pic:task5_2}
+\end{figure}
+\newpage
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/Task5-rss-xy.pdf}
+    \caption{Diagnostic plot для подхода $(4)$ в примере \ref{exmpl:5}}
+    \label{pic:task5_3}
+\end{figure}
+\newpage
 
 \bibliographystyle{apalike}
 \bibliography{Biblio}
